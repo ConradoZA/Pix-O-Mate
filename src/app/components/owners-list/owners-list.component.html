@@ -1,1 +1,47 @@
-<button mat-raised-button (click)="onClick()">click me!</button>
+<div class="flex-row flex-center">
+  <table>
+    <tr>
+      <th>Nombre</th>
+      <th>email</th>
+      <th>Status</th>
+    </tr>
+    <tr
+      *ngFor="let owner of list; let i = index"
+      (click)="onShowDetail(owner['id'], i)"
+      [ngClass]="{
+        clickable: true,
+        'owners-list-selected': showDetail && detailOwner['id'] === owner['id']
+      }"
+    >
+      <td>{{ owner["name"] }}</td>
+      <td>{{ owner["email"] }}</td>
+      <td>{{ owner["status"] }}</td>
+    </tr>
+  </table>
+  <app-owner-detail
+    *ngIf="showDetail"
+    class="owners-list-card"
+    [detail]="detailOwner"
+    [onCloseDetail]="onCloseDetail"
+  ></app-owner-detail>
+</div>
+<br />
+<div class="flex-row space-evenly">
+  <button
+    mat-raised-button
+    color="accent"
+    [disabled]="page <= 1"
+    (click)="prevPage()"
+  >
+    Anterior
+  </button>
+  <span>{{ page }}</span>
+  <button
+    mat-raised-button
+    color="accent"
+    [disabled]="page >= maxPages"
+    (click)="nextPage()"
+  >
+    Siguiente
+  </button>
+</div>

@@ -9,7 +9,7 @@ import { OwnersService } from '../../services/owners.service';
 })
 export class HeaderComponent implements OnInit {
   catsKilled: number = this.ownersServices.killedKitties;
-  favourites: number = 0;
+  favourites: number = this.ownersServices.favoritesNumber;
   href: string = '';
 
   getPageName() {
@@ -28,5 +28,13 @@ export class HeaderComponent implements OnInit {
 
   constructor(private router: Router, private ownersServices: OwnersService) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.ownersServices.getAllOwners();
+    this.ownersServices.kittiesChanged.subscribe((data) => {
+      this.catsKilled = data;
+    });
+    this.ownersServices.favoritesChanged.subscribe((data) => {
+      this.favourites = data;
+    });
+  }
 }

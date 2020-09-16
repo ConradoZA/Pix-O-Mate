@@ -3,27 +3,39 @@ html,
 body {
   height: 100%;
 }
+
 body {
-  margin: 0;
+  margin : 0;
   padding: 0;
 }
 
 .flex-row {
-  display: flex;
+  display       : flex;
   flex-direction: row;
 }
+
 .flex-center {
   justify-content: center;
+  align-items    : center;
 }
+
 .space-between {
   justify-content: space-between;
 }
+
 .space-evenly {
   justify-content: space-evenly;
 }
+
 .space-around {
   justify-content: space-around;
 }
+
 .align-baseline {
   align-items: baseline;
+}
+
+.clickable {
+  user-select: none;
+  cursor     : pointer;
 }

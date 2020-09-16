@@ -1,7 +1,11 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -16,6 +20,8 @@ import { SearchComponent } from './components/search/search.component';
 import { OwnersListComponent } from './components/owners-list/owners-list.component';
 import { FavouritesComponent } from './components/favourites/favourites.component';
 import { SoyProComponent } from './components/soy-pro/pro.component';
+import { OwnerDetailComponent } from './components/owner-detail/owner-detail.component';
+import { OwnersComponent } from './components/owners/owners.component';
 
 @NgModule({
   declarations: [
@@ -27,14 +33,20 @@ import { SoyProComponent } from './components/soy-pro/pro.component';
     OwnersListComponent,
     FavouritesComponent,
     SoyProComponent,
+    OwnerDetailComponent,
+    OwnersComponent,
   ],
   imports: [
     BrowserModule,
+    FormsModule,
     AppRoutingModule,
     HttpClientModule,
     BrowserAnimationsModule,
     StorageServiceModule,
     MatToolbarModule,
+    MatCardModule,
+    MatButtonModule,
+    MatInputModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

@@ -2,23 +2,40 @@ import { Inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { API_TOKEN } from 'src/app/settings/api-token';
 import { LOCAL_STORAGE, StorageService } from 'ngx-webstorage-service';
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class OwnersService {
-  DATE_KEY: string = 'download-date';
-  OWNERS_KEY: string = 'owners';
-  CALLS_KEY: string = 'killedKitties';
-  date;
-  pages: number;
-  token: string = API_TOKEN;
-  owners: Array<any> = this.localStorage.get(this.OWNERS_KEY) || [];
-  lastDownload = new Date(this.localStorage.get(this.DATE_KEY) || 1970);
-  killedKitties: number = this.localStorage.get(this.CALLS_KEY) || 0;
+  constructor(
+    public http: HttpClient,
+    @Inject(LOCAL_STORAGE) private localStorage: StorageService
+  ) {}
+
+  private token: string = API_TOKEN;
+
+  private DATE_KEY: string = 'download-date';
+  private OWNERS_KEY: string = 'owners';
+  private CALLS_KEY: string = 'killedKitties';
+  private MAX_KEY: string = 'maxPages';
+  private FAV_KEY: string = 'favNr';
+  private FAVLIST_KEY: string = 'favList';
+
+  private owners: Array<{}> = this.localStorage.get(this.OWNERS_KEY) || [];
+  private lastDownload = new Date(this.localStorage.get(this.DATE_KEY) || 1970);
+  public killedKitties: number = this.localStorage.get(this.CALLS_KEY) || 0;
+  public pages: number =
+    this.localStorage.get(this.MAX_KEY) || this.killedKitties;
+  public favoritesNumber: number = this.localStorage.get(this.FAV_KEY) || 0;
+  private favoritesList: Array<{}> =
+    this.localStorage.get(this.FAVLIST_KEY) || [];
+
+  private date;
+  public kittiesChanged = new Subject<number>();
+  public favoritesChanged = new Subject<number>();
 
   differentYear(): boolean {
-    console.log(this.lastDownload, this.date);
     return this.lastDownload.getFullYear() < this.date.getFullYear();
   }
   differentMonth(): boolean {
@@ -40,23 +57,38 @@ export class OwnersService {
       this.date.getDay() > 4
     );
   }
-
-  constructor(
-    public http: HttpClient,
-    @Inject(LOCAL_STORAGE) private localStorage: StorageService
-  ) {}
+  addFavorite(owner: Object): void {
+    this.favoritesNumber++;
+    this.favoritesList.push(owner);
+    this.localStorage.set(this.FAV_KEY, this.favoritesNumber);
+    this.localStorage.set(this.FAVLIST_KEY, this.favoritesList);
+    this.favoritesChanged.next(this.favoritesNumber);
+  }
+  reduceFavorite(id: number): void {
+    this.favoritesList = this.favoritesList.filter(
+      (owner) => owner['id'] !== id
+    );
+    this.localStorage.set(this.FAVLIST_KEY, this.favoritesList);
+    this.favoritesNumber--;
+    this.localStorage.set(this.FAV_KEY, this.favoritesNumber);
+    this.favoritesChanged.next(this.favoritesNumber);
+  }
+  getFavoritesList(): Array<{}> {
+    return this.favoritesList;
+  }
+  getOwners(): Array<{}> {
+    return this.owners;
+  }
 
   getAllOwners(): void {
     this.date = new Date();
 
     if (
-      !this.lastDownload ||
-      (this.lastDownload &&
-        (this.differentYear() ||
-          this.differentMonth() ||
-          this.differentWeek() ||
-          this.beforeMonday() ||
-          this.betweenTuesdayAndThursday()))
+      this.differentYear() ||
+      this.differentMonth() ||
+      this.differentWeek() ||
+      this.beforeMonday() ||
+      this.betweenTuesdayAndThursday()
     ) {
       console.log('hay que descargar');
       this.http
@@ -82,6 +114,8 @@ export class OwnersService {
                 this.localStorage.set(this.OWNERS_KEY, this.owners);
                 this.localStorage.set(this.CALLS_KEY, this.killedKitties);
                 this.localStorage.set(this.DATE_KEY, new Date());
+                this.localStorage.set(this.MAX_KEY, this.pages);
+                this.kittiesChanged.next(this.killedKitties);
               });
           }
         });

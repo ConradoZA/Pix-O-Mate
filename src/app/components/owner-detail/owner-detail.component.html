@@ -1,0 +1,30 @@
+<mat-card>
+  <mat-card-title>{{ detail["name"] }}</mat-card-title>
+  <mat-card-subtitle>{{ detail["gender"] }}</mat-card-subtitle>
+  <mat-card-content>
+    <p>{{ detail["status"] }}</p>
+    <p>{{ detail["email"] }}</p>
+    <p>Se registró hace días.</p>
+  </mat-card-content>
+  <mat-card-actions>
+    <div class="flex-row space-evenly">
+      <button mat-stroked-button (click)="onCloseDetail()">X</button>
+      <button
+        mat-raised-button
+        color="accent"
+        *ngIf="!existsInFavList(detail['id'])"
+        (click)="onAddFav(detail)"
+      >
+        Añadir Favorito
+      </button>
+      <button
+        mat-raised-button
+        color="accent"
+        *ngIf="existsInFavList(detail['id'])"
+        (click)="onReduceFav(detail['id'])"
+      >
+        Eliminar Favorito
+      </button>
+    </div>
+  </mat-card-actions>
+</mat-card>
