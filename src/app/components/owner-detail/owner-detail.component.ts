@@ -17,10 +17,10 @@ export class OwnerDetailComponent implements OnInit, OnChanges, OnDestroy {
         this.status = data;
       }
     );
-    this.calculateDifference();
   }
   ngOnChanges(): void {
     this.ownersServices.getUpdatedStatus(this.detail['id']);
+    this.calculateDifference();
   }
   ngOnDestroy(): void {
     this.statusSbscription.unsubscribe();
@@ -35,6 +35,7 @@ export class OwnerDetailComponent implements OnInit, OnChanges, OnDestroy {
   years: number;
   months: number;
   days: number;
+  today: Date = new Date();
 
   existsInFavList(id: number) {
     this.checkFavList = this.favoritesList
@@ -48,12 +49,9 @@ export class OwnerDetailComponent implements OnInit, OnChanges, OnDestroy {
   };
   calculateDifference = (): void => {
     const created = new Date(this.detail['created_at']);
-    console.log(created);
-    const now = new Date();
-    console.log(now);
-    this.years = now.getFullYear() - created.getFullYear();
-    this.months = now.getMonth() - created.getMonth();
-    this.days = now.getDate() - created.getDate();
+    this.years = this.today.getFullYear() - created.getFullYear();
+    this.months = this.today.getMonth() - created.getMonth();
+    this.days = this.today.getDate() - created.getDate();
   };
 
   onAddFav(owner: Object): void {
