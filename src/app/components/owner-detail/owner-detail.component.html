@@ -16,16 +16,21 @@
   <mat-card-content>
     <p
       [ngClass]="{
-        green: detail['status'] === 'Active',
-        red: detail['status'] !== 'Active'
+        green: status === 'Active',
+        red: status !== 'Active'
       }"
     >
-      {{ detail["status"] }}
+      {{ status }}
     </p>
     <p>{{ detail["email"] }}</p>
     <p>
-      Registrado hace <span>X años - </span> <span>Y meses - </span>
-      <span>Z días.</span>
+      Registrad<span *ngIf="detail['gender'] === 'Male'">o </span
+      ><span *ngIf="detail['gender'] === 'Female'">a </span>
+      <span *ngIf="years || months || days"> hace</span>
+      <span *ngIf="years">{{ years }} años - </span>
+      <span *ngIf="months">{{ months }} meses - </span>
+      <span *ngIf="days">{{ days }} días.</span>
+      <span *ngIf="!days">hoy.</span>
     </p>
   </mat-card-content>
   <mat-card-actions>

@@ -6,8 +6,8 @@
       <th>Status</th>
     </tr>
     <tr
-      *ngFor="let owner of owners[page - 1]; let i = index"
-      (click)="onShowDetail(owner['id'], i)"
+      *ngFor="let owner of owners[page - 1]"
+      (click)="onShowDetail(owner['id'])"
       [ngClass]="{
         clickable: true,
         'owners-list-selected': showDetail && detailOwner['id'] === owner['id']
@@ -35,7 +35,7 @@
   >
     Anterior
   </button>
-  <span>{{ page }}</span>
+  <span>{{ page }} de {{ maxPages }}</span>
   <button
     mat-raised-button
     color="accent"

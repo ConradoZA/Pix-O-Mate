@@ -6,7 +6,7 @@ import { OwnersService } from '../../services/owners.service';
   templateUrl: './owners-list.component.html',
   styleUrls: ['./owners-list.component.scss'],
 })
-export class OwnersListComponent implements OnInit, OnChanges {
+export class OwnersListComponent implements OnInit {
   constructor(private ownersServices: OwnersService) {}
 
   ngOnInit(): void {
@@ -14,13 +14,13 @@ export class OwnersListComponent implements OnInit, OnChanges {
     this.ownersServices.maxPagesChanged.subscribe(
       (data) => (this.maxPages = data)
     );
-    this.populateList();
+    this.getOwnersPage();
   }
-  ngOnChanges() {
-    this.populateList();
-  }
+  // ngOnChanges() {
+  //   this.populateList();
+  // }
 
-  owners: Array<{}> = this.ownersServices.ownersList;
+  owners: Array<any> = this.ownersServices.ownersList;
   maxPages: number = this.ownersServices.maxPages;
   list: Array<{}> = [];
   page: number = 1;
@@ -34,42 +34,6 @@ export class OwnersListComponent implements OnInit, OnChanges {
   getOwnersPage = (): void => {
     this.ownersServices.getOwners(this.page);
   };
-
-  // populateList(): void {
-  //   this.startingPoint = this.items * (this.page - 1);
-  //   this.list = [];
-  //   if (
-  //     length < this.items ||
-  //     (length % 20 < this.items && this.page === this.maxPages)
-  //   ) {
-  //     for (let i = this.startingPoint; i < length; i++) {
-  //       if (length > 0) this.list.push(this.owners[i]);
-  //     }
-  //   } else {
-  //     for (let i = this.startingPoint; i < this.items * this.page; i++) {
-  //       this.list.push(this.owners[i]);
-  //     }
-  //   }
-  // }
-  populateList(): void {
-    this.ownersServices.getOwners(this.page);
-    console.log(this.owners, this.page);
-    console.log(this.owners[this.page - 1]);
-    // this.list = this.owners[this.page-1];
-    // if (
-    //   length < this.items ||
-    //   (length % 20 < this.items && this.page === this.maxPages)
-    // ) {
-    //   for (let i = this.startingPoint; i < length; i++) {
-    //     if (length > 0) this.list.push(this.owners[i]);
-    //   }
-    // } else {
-    //   for (let i = this.startingPoint; i < this.items * this.page; i++) {
-    //     this.list.push(this.owners[i]);
-    //   }
-    // }
-  }
-
   prevPage = (): void => {
     if (this.page - 1 >= 1) {
       this.page -= 1;
@@ -83,9 +47,11 @@ export class OwnersListComponent implements OnInit, OnChanges {
     }
   };
 
-  onShowDetail(id: number, index: number): void {
+  onShowDetail(id: number): void {
+    this.detailOwner = this.owners[this.page - 1].filter(
+      (owner) => owner['id'] === id
+    )[0];
     this.showDetail = true;
-    this.detailOwner = this.list[index];
   }
   onCloseDetail = (): void => {
     this.showDetail = false;

@@ -16,7 +16,7 @@ export class OwnersService {
   // Variables declaration
   private token: string = API_TOKEN;
 
-  public ownersList: Array<{}> = [];
+  public ownersList: Array<any> = [];
   public ownersChanged = new Subject<Array<{}>>();
 
   public searchList: Array<{}> = [];
@@ -39,6 +39,9 @@ export class OwnersService {
   public maxPages: number =
     this.localStorage.get(this.MAX_KEY) || this.ownersList.length;
   public maxPagesChanged = new Subject<number>();
+
+  public status: string = '';
+  public statusChanged = new Subject<string>();
 
   // Functions
   getOwners = (page: number = 1): void => {
@@ -84,6 +87,26 @@ export class OwnersService {
         });
     }
     return this.ownersList[page];
+  };
+  getUpdatedStatus = (id: number): void => {
+    // for (let i = 0; i < this.maxPages; i++) {
+    //   const pageArray = this.ownersList[i];
+    //   const alreadyExist = pageArray.filter((owner) => {
+    //     owner['id'] === id;
+    //   });
+    //   if (alreadyExist.length > 0) return alreadyExist[0];
+    // }
+    this.status = '';
+    this.http
+      .get(`https://gorest.co.in/public-api/users/${id}`, {
+        headers: {
+          authorization: this.token,
+        },
+      })
+      .subscribe((res) => {
+        this.killOneKittie();
+        this.statusChanged.next(res['data']['status']);
+      });
   };
 
   updateFavNr = (): void => {
