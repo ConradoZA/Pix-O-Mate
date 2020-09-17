@@ -13,112 +13,100 @@ export class OwnersService {
     @Inject(LOCAL_STORAGE) private localStorage: StorageService
   ) {}
 
+  // Variables declaration
   private token: string = API_TOKEN;
 
-  private DATE_KEY: string = 'download-date';
-  private OWNERS_KEY: string = 'owners';
-  private CALLS_KEY: string = 'killedKitties';
-  private MAX_KEY: string = 'maxPages';
-  private FAV_KEY: string = 'favNr';
+  public ownersList: Array<{}> = [];
+  public ownersChanged = new Subject<Array<{}>>();
+
+  public searchList: Array<{}> = [];
+  private lastSearch: string = '';
+  public searchPages: number = 0;
+
   private FAVLIST_KEY: string = 'favList';
+  private favList: Array<{}> = this.localStorage.get(this.FAVLIST_KEY) || [];
 
-  private owners: Array<{}> = this.localStorage.get(this.OWNERS_KEY) || [];
-  private lastDownload = new Date(this.localStorage.get(this.DATE_KEY) || 1970);
+  private FAV_KEY: string = 'favNr';
+  public favNr: number =
+    this.localStorage.get(this.FAV_KEY) || this.favList.length;
+  public favChanged = new Subject<number>();
+
+  private CALLS_KEY: string = 'killedKitties';
   public killedKitties: number = this.localStorage.get(this.CALLS_KEY) || 0;
-  public pages: number =
-    this.localStorage.get(this.MAX_KEY) || this.killedKitties;
-  public favoritesNumber: number = this.localStorage.get(this.FAV_KEY) || 0;
-  private favoritesList: Array<{}> =
-    this.localStorage.get(this.FAVLIST_KEY) || [];
-
-  private date;
   public kittiesChanged = new Subject<number>();
-  public favoritesChanged = new Subject<number>();
 
-  differentYear(): boolean {
-    return this.lastDownload.getFullYear() < this.date.getFullYear();
-  }
-  differentMonth(): boolean {
-    return this.lastDownload.getMonth() < this.date.getMonth();
-  }
-  differentWeek(): boolean {
-    return this.lastDownload.getDate() - this.date.getDate() >= 7;
-  }
-  beforeMonday(): boolean {
-    return (
-      (this.lastDownload.getDay() === 0 || this.lastDownload.getDay() > 4) &&
-      this.date.getDay() > 1
-    );
-  }
-  betweenTuesdayAndThursday(): boolean {
-    return (
-      this.lastDownload.getDay() <= 4 &&
-      this.lastDownload.getDay() > 1 &&
-      this.date.getDay() > 4
-    );
-  }
-  addFavorite(owner: Object): void {
-    this.favoritesNumber++;
-    this.favoritesList.push(owner);
-    this.localStorage.set(this.FAV_KEY, this.favoritesNumber);
-    this.localStorage.set(this.FAVLIST_KEY, this.favoritesList);
-    this.favoritesChanged.next(this.favoritesNumber);
-  }
-  reduceFavorite(id: number): void {
-    this.favoritesList = this.favoritesList.filter(
-      (owner) => owner['id'] !== id
-    );
-    this.localStorage.set(this.FAVLIST_KEY, this.favoritesList);
-    this.favoritesNumber--;
-    this.localStorage.set(this.FAV_KEY, this.favoritesNumber);
-    this.favoritesChanged.next(this.favoritesNumber);
-  }
-  getFavoritesList(): Array<{}> {
-    return this.favoritesList;
-  }
-  getOwners(): Array<{}> {
-    return this.owners;
-  }
+  private MAX_KEY: string = 'maxPages';
+  public maxPages: number =
+    this.localStorage.get(this.MAX_KEY) || this.ownersList.length;
+  public maxPagesChanged = new Subject<number>();
 
-  getAllOwners(): void {
-    this.date = new Date();
-
-    if (
-      this.differentYear() ||
-      this.differentMonth() ||
-      this.differentWeek() ||
-      this.beforeMonday() ||
-      this.betweenTuesdayAndThursday()
-    ) {
-      console.log('hay que descargar');
+  // Functions
+  getOwners = (page: number = 1): void => {
+    if (!this.ownersList[page - 1]) {
       this.http
-        .get('https://gorest.co.in/public-api/users', {
+        .get(`https://gorest.co.in/public-api/users?page=${page}`, {
           headers: {
             authorization: this.token,
           },
         })
         .subscribe((res) => {
-          this.pages = res['meta'].pagination.pages;
-          this.owners.push(...res['data']);
-          this.killedKitties++;
-          for (let i = 2; i <= this.pages; i++) {
-            this.http
-              .get(`https://gorest.co.in/public-api/users?page=${i}`, {
-                headers: {
-                  authorization: this.token,
-                },
-              })
-              .subscribe((res) => {
-                this.owners.push(...res['data']);
-                this.killedKitties++;
-                this.localStorage.set(this.OWNERS_KEY, this.owners);
-                this.localStorage.set(this.CALLS_KEY, this.killedKitties);
-                this.localStorage.set(this.DATE_KEY, new Date());
-                this.localStorage.set(this.MAX_KEY, this.pages);
-                this.kittiesChanged.next(this.killedKitties);
-              });
-          }
+          this.ownersList[page - 1] = res['data'];
+          this.ownersChanged.next(this.ownersList);
+          this.maxPages = res['meta'].pagination.pages;
+          this.localStorage.set(this.MAX_KEY, this.maxPages);
+          this.maxPagesChanged.next(this.maxPages);
+          this.killOneKittie();
         });
     }
+  };
+  getSearch = (name: string, page: number = 1): Object => {
+    if (this.lastSearch !== name) {
+      this.searchList = [];
+      // this.searchPages = 0;
+      this.lastSearch = name;
+    }
+    if (!this.searchList[page]) {
+      this.http
+        .get(
+          `https://gorest.co.in/public-api/users?name=${name}&page=${page}`,
+          {
+            headers: {
+              authorization: this.token,
+            },
+          }
+        )
+        .subscribe((res) => {
+          const index = res['meta'].pagination.page;
+          this.searchList[index] = res['data'];
+          this.searchPages = res['meta'].pagination.pages;
+          this.killOneKittie();
+          return this.ownersList[page];
+        });
+    }
+    return this.ownersList[page];
+  };
+
+  updateFavNr = (): void => {
+    this.favNr = this.favList.length;
+    this.localStorage.set(this.FAV_KEY, this.favNr);
+    this.favChanged.next(this.favNr);
+  };
+  killOneKittie = (): void => {
+    this.killedKitties++;
+    this.kittiesChanged.next(this.killedKitties);
+  };
+
+  getFavoritesList = (): Array<{}> => {
+    return this.favList;
+  };
+  addFavorite(owner: Object): void {
+    this.favList.push(owner);
+    this.localStorage.set(this.FAVLIST_KEY, this.favList);
+    this.updateFavNr();
+  }
+  reduceFavorite(id: number): void {
+    this.favList = this.favList.filter((owner) => owner['id'] !== id);
+    this.localStorage.set(this.FAVLIST_KEY, this.favList);
+    this.updateFavNr();
   }
 }

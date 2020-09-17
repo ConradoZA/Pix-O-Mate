@@ -8,11 +8,23 @@ import { OwnersService } from '../../services/owners.service';
   styleUrls: ['./header.component.scss'],
 })
 export class HeaderComponent implements OnInit {
+  constructor(private router: Router, private ownersServices: OwnersService) {}
+
+  ngOnInit(): void {
+    this.ownersServices.kittiesChanged.subscribe((data) => {
+      this.catsKilled = data;
+    });
+    this.ownersServices.favChanged.subscribe((data) => {
+      this.favourites = data;
+    });
+  }
+  // Variables declaration
   catsKilled: number = this.ownersServices.killedKitties;
-  favourites: number = this.ownersServices.favoritesNumber;
+  favourites: number = this.ownersServices.favNr;
   href: string = '';
 
-  getPageName() {
+  // Functions
+  getPageName = (): string => {
     this.href = this.router.url;
     switch (this.href) {
       case '/owners':
@@ -24,17 +36,8 @@ export class HeaderComponent implements OnInit {
       default:
         return 'Pix-O-Mate';
     }
-  }
-
-  constructor(private router: Router, private ownersServices: OwnersService) {}
-
-  ngOnInit(): void {
-    this.ownersServices.getAllOwners();
-    this.ownersServices.kittiesChanged.subscribe((data) => {
-      this.catsKilled = data;
-    });
-    this.ownersServices.favoritesChanged.subscribe((data) => {
-      this.favourites = data;
-    });
-  }
+  };
+  toHome = () => {
+    this.router.navigate(['']);
+  };
 }

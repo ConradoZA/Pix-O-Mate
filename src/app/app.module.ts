@@ -18,7 +18,6 @@ import { HomeComponent } from './components/home/home.component';
 import { NotFoundComponent } from './components/not-found/not-found.component';
 import { SearchComponent } from './components/search/search.component';
 import { OwnersListComponent } from './components/owners-list/owners-list.component';
-import { FavouritesComponent } from './components/favourites/favourites.component';
 import { SoyProComponent } from './components/soy-pro/pro.component';
 import { OwnerDetailComponent } from './components/owner-detail/owner-detail.component';
 import { OwnersComponent } from './components/owners/owners.component';
@@ -31,7 +30,6 @@ import { OwnersComponent } from './components/owners/owners.component';
     NotFoundComponent,
     SearchComponent,
     OwnersListComponent,
-    FavouritesComponent,
     SoyProComponent,
     OwnerDetailComponent,
     OwnersComponent,

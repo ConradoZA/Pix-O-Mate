@@ -1,10 +1,32 @@
 <mat-card>
   <mat-card-title>{{ detail["name"] }}</mat-card-title>
   <mat-card-subtitle>{{ detail["gender"] }}</mat-card-subtitle>
+  <img
+    mat-card-image
+    *ngIf="detail['gender'] === 'Male'"
+    src="assets/img/cat1.jpg"
+    alt="photo profile"
+  />
+  <img
+    mat-card-image
+    *ngIf="detail['gender'] !== 'Male'"
+    src="assets/img/cat2.jpg"
+    alt="photo profile"
+  />
   <mat-card-content>
-    <p>{{ detail["status"] }}</p>
+    <p
+      [ngClass]="{
+        green: detail['status'] === 'Active',
+        red: detail['status'] !== 'Active'
+      }"
+    >
+      {{ detail["status"] }}
+    </p>
     <p>{{ detail["email"] }}</p>
-    <p>Se registró hace días.</p>
+    <p>
+      Registrado hace <span>X años - </span> <span>Y meses - </span>
+      <span>Z días.</span>
+    </p>
   </mat-card-content>
   <mat-card-actions>
     <div class="flex-row space-evenly">

@@ -6,7 +6,7 @@
       <th>Status</th>
     </tr>
     <tr
-      *ngFor="let owner of list; let i = index"
+      *ngFor="let owner of owners[page - 1]; let i = index"
       (click)="onShowDetail(owner['id'], i)"
       [ngClass]="{
         clickable: true,
