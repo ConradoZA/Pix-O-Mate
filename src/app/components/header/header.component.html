@@ -7,7 +7,7 @@
     <button mat-flat-button color="primary" (click)="toHome()">&#8592;</button>
     <h1>{{ getPageName() }}</h1>
   </div>
-  <div>
+  <div (click)="openFavoritesList()">
     <img src="assets/img/cat-heart.png" alt="favourites" class="header-icon" />
     <span>{{ favourites }}</span>
   </div>

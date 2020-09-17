@@ -1,4 +1,4 @@
-<mat-card>
+<mat-card class="owner-detail-card">
   <mat-card-title>{{ detail["name"] }}</mat-card-title>
   <mat-card-subtitle>{{ detail["gender"] }}</mat-card-subtitle>
   <img
@@ -35,7 +35,7 @@
   </mat-card-content>
   <mat-card-actions>
     <div class="flex-row space-evenly">
-      <button mat-stroked-button (click)="onCloseDetail()">X</button>
+      <button mat-stroked-button (click)="onClose()">X</button>
       <button
         mat-raised-button
         color="accent"

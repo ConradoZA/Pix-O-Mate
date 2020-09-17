@@ -6,8 +6,8 @@
       <th>Status</th>
     </tr>
     <tr
-      *ngFor="let owner of owners[page - 1]"
-      (click)="onShowDetail(owner['id'])"
+      *ngFor="let owner of list"
+      (click)="openDialog(owner['id'])"
       [ngClass]="{
         clickable: true,
         'owners-list-selected': showDetail && detailOwner['id'] === owner['id']
@@ -18,12 +18,6 @@
       <td>{{ owner["status"] }}</td>
     </tr>
   </table>
-  <app-owner-detail
-    *ngIf="showDetail"
-    class="owners-list-card"
-    [detail]="detailOwner"
-    [onCloseDetail]="onCloseDetail"
-  ></app-owner-detail>
 </div>
 <br />
 <div class="flex-row space-evenly">

@@ -1,33 +1,37 @@
-import { Component, Input, OnChanges, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { OwnersService } from '../../services/owners.service';
+import { FavoritesService } from '../../services/favorites.service';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { OwnersListComponent } from '../owners-list/owners-list.component';
 
 @Component({
   selector: 'app-owner-detail',
   templateUrl: './owner-detail.component.html',
   styleUrls: ['./owner-detail.component.scss'],
 })
-export class OwnerDetailComponent implements OnInit, OnChanges, OnDestroy {
-  constructor(private ownersServices: OwnersService) {}
+export class OwnerDetailComponent implements OnInit, OnDestroy {
+  constructor(
+    public dialogRef: MatDialogRef<OwnersListComponent>,
+    @Inject(MAT_DIALOG_DATA) public detail,
+    private favoritesServices: FavoritesService,
+    private ownersServices: OwnersService
+  ) {}
 
   ngOnInit(): void {
-    this.favoritesList = this.ownersServices.getFavoritesList();
+    this.favoritesList = this.favoritesServices.getFavoritesList();
     this.statusSbscription = this.ownersServices.statusChanged.subscribe(
       (data) => {
         this.status = data;
       }
     );
-  }
-  ngOnChanges(): void {
-    this.ownersServices.getUpdatedStatus(this.detail['id']);
+    this.updateStatus();
     this.calculateDifference();
   }
   ngOnDestroy(): void {
     this.statusSbscription.unsubscribe();
   }
 
-  @Input() detail: Object;
-  @Input() onCloseDetail: () => {};
   favoritesList: Array<any> = [];
   checkFavList: boolean;
   status: string = this.ownersServices.status;
@@ -43,9 +47,8 @@ export class OwnerDetailComponent implements OnInit, OnChanges, OnDestroy {
       .includes(true);
     return this.checkFavList;
   }
-  checkStatus = (): void => {
-    console.log(this.status);
-    this.detail['status'] = this.status;
+  updateStatus = (): void => {
+    this.ownersServices.getUpdatedStatus(this.detail['id']);
   };
   calculateDifference = (): void => {
     const created = new Date(this.detail['created_at']);
@@ -55,10 +58,14 @@ export class OwnerDetailComponent implements OnInit, OnChanges, OnDestroy {
   };
 
   onAddFav(owner: Object): void {
-    this.ownersServices.addFavorite(owner);
+    this.favoritesServices.addFavorite(owner);
   }
   onReduceFav(id: number): void {
-    this.ownersServices.reduceFavorite(id);
-    this.favoritesList = this.ownersServices.getFavoritesList();
+    this.favoritesServices.reduceFavorite(id);
+    this.favoritesList = this.favoritesServices.getFavoritesList();
   }
+
+  onClose = (): void => {
+    this.dialogRef.close();
+  };
 }

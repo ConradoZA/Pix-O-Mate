@@ -16,36 +16,29 @@ export class OwnersService {
   // Variables declaration
   private token: string = API_TOKEN;
 
-  public ownersList: Array<any> = [];
-  public ownersChanged = new Subject<Array<{}>>();
+  private ownersList: Array<any> = [];
+  public maxPages: number = this.ownersList.length;
+  public maxPagesChanged = new Subject<number>();
+  public list: Array<any> = [];
+  public listCanged = new Subject<Array<any>>();
 
-  public searchList: Array<{}> = [];
+  private searchList: Array<any> = [];
+  private search: string = '';
   private lastSearch: string = '';
   public searchPages: number = 0;
-
-  private FAVLIST_KEY: string = 'favList';
-  private favList: Array<{}> = this.localStorage.get(this.FAVLIST_KEY) || [];
-
-  private FAV_KEY: string = 'favNr';
-  public favNr: number =
-    this.localStorage.get(this.FAV_KEY) || this.favList.length;
-  public favChanged = new Subject<number>();
+  public maxSearchPagesChanged = new Subject<number>();
 
   private CALLS_KEY: string = 'killedKitties';
   public killedKitties: number = this.localStorage.get(this.CALLS_KEY) || 0;
   public kittiesChanged = new Subject<number>();
-
-  private MAX_KEY: string = 'maxPages';
-  public maxPages: number =
-    this.localStorage.get(this.MAX_KEY) || this.ownersList.length;
-  public maxPagesChanged = new Subject<number>();
 
   public status: string = '';
   public statusChanged = new Subject<string>();
 
   // Functions
   getOwners = (page: number = 1): void => {
-    if (!this.ownersList[page - 1]) {
+    const index: number = page - 1;
+    if (!this.ownersList[index]) {
       this.http
         .get(`https://gorest.co.in/public-api/users?page=${page}`, {
           headers: {
@@ -53,25 +46,23 @@ export class OwnersService {
           },
         })
         .subscribe((res) => {
-          this.ownersList[page - 1] = res['data'];
-          this.ownersChanged.next(this.ownersList);
+          this.ownersList[index] = res['data'];
           this.maxPages = res['meta'].pagination.pages;
-          this.localStorage.set(this.MAX_KEY, this.maxPages);
           this.maxPagesChanged.next(this.maxPages);
           this.killOneKittie();
+          this.listCanged.next(this.ownersList[index]);
         });
+      return;
     }
+    this.listCanged.next(this.ownersList[index]);
   };
-  getSearch = (name: string, page: number = 1): Object => {
-    if (this.lastSearch !== name) {
-      this.searchList = [];
-      // this.searchPages = 0;
-      this.lastSearch = name;
-    }
-    if (!this.searchList[page]) {
+  getSearch = (page: number = 1): void => {
+    const index: number = page - 1;
+    if (!this.searchList[index] || this.lastSearch !== this.search) {
+      this.lastSearch = this.search;
       this.http
         .get(
-          `https://gorest.co.in/public-api/users?name=${name}&page=${page}`,
+          `https://gorest.co.in/public-api/users?name=${this.search}&page=${page}`,
           {
             headers: {
               authorization: this.token,
@@ -79,14 +70,15 @@ export class OwnersService {
           }
         )
         .subscribe((res) => {
-          const index = res['meta'].pagination.page;
-          this.searchList[index] = res['data'];
           this.searchPages = res['meta'].pagination.pages;
+          this.maxSearchPagesChanged.next(this.searchPages);
           this.killOneKittie();
-          return this.ownersList[page];
+          this.searchList[index] = res['data'];
+          this.listCanged.next(this.searchList[index]);
         });
+      return;
     }
-    return this.ownersList[page];
+    this.listCanged.next(this.searchList[index]);
   };
   getUpdatedStatus = (id: number): void => {
     // for (let i = 0; i < this.maxPages; i++) {
@@ -109,27 +101,12 @@ export class OwnersService {
       });
   };
 
-  updateFavNr = (): void => {
-    this.favNr = this.favList.length;
-    this.localStorage.set(this.FAV_KEY, this.favNr);
-    this.favChanged.next(this.favNr);
+  setSearch = (query: string): void => {
+    this.search = query;
   };
+
   killOneKittie = (): void => {
     this.killedKitties++;
     this.kittiesChanged.next(this.killedKitties);
   };
-
-  getFavoritesList = (): Array<{}> => {
-    return this.favList;
-  };
-  addFavorite(owner: Object): void {
-    this.favList.push(owner);
-    this.localStorage.set(this.FAVLIST_KEY, this.favList);
-    this.updateFavNr();
-  }
-  reduceFavorite(id: number): void {
-    this.favList = this.favList.filter((owner) => owner['id'] !== id);
-    this.localStorage.set(this.FAVLIST_KEY, this.favList);
-    this.updateFavNr();
-  }
 }

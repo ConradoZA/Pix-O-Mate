@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { OwnersService } from '../../services/owners.service';
+import { FavoritesService } from '../../services/favorites.service';
+import { MatDialog } from '@angular/material/dialog';
+import { FavoritesListComponent } from '../favorites-list/favorites-list.component';
 
 @Component({
   selector: 'app-header',
@@ -8,19 +11,24 @@ import { OwnersService } from '../../services/owners.service';
   styleUrls: ['./header.component.scss'],
 })
 export class HeaderComponent implements OnInit {
-  constructor(private router: Router, private ownersServices: OwnersService) {}
+  constructor(
+    private router: Router,
+    private ownersServices: OwnersService,
+    private favoritesService: FavoritesService,
+    public dialog: MatDialog
+  ) {}
 
   ngOnInit(): void {
     this.ownersServices.kittiesChanged.subscribe((data) => {
       this.catsKilled = data;
     });
-    this.ownersServices.favChanged.subscribe((data) => {
+    this.favoritesService.favChanged.subscribe((data) => {
       this.favourites = data;
     });
   }
   // Variables declaration
   catsKilled: number = this.ownersServices.killedKitties;
-  favourites: number = this.ownersServices.favNr;
+  favourites: number = this.favoritesService.favNr;
   href: string = '';
 
   // Functions
@@ -39,5 +47,10 @@ export class HeaderComponent implements OnInit {
   };
   toHome = () => {
     this.router.navigate(['']);
+  };
+  openFavoritesList = (): void => {
+    this.dialog.open(FavoritesListComponent, {
+      // data: this.list.filter((owner) => owner['id'] === id)[0],
+    });
   };
 }

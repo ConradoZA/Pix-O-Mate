@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { OwnersService } from '../../services/owners.service';
 
@@ -7,19 +7,10 @@ import { OwnersService } from '../../services/owners.service';
   templateUrl: './owners.component.html',
   styleUrls: ['./owners.component.scss'],
 })
-export class OwnersComponent implements OnInit, OnDestroy {
+export class OwnersComponent implements OnInit {
   constructor(private ownersServices: OwnersService) {}
 
   ngOnInit(): void {
-    this.pagesSubscription = this.ownersServices.maxPagesChanged.subscribe(
-      (data) => (this.maxPages = data)
-    );
+    this.ownersServices.getOwners();
   }
-  ngOnDestroy(): void {
-    this.pagesSubscription.unsubscribe();
-  }
-
-  pagesSubscription: Subscription;
-  maxPages: number = 1;
-  page: number = 1;
 }

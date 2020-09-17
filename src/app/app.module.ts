@@ -6,6 +6,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
+import { MatDialogModule } from '@angular/material/dialog';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -21,6 +22,7 @@ import { OwnersListComponent } from './components/owners-list/owners-list.compon
 import { SoyProComponent } from './components/soy-pro/pro.component';
 import { OwnerDetailComponent } from './components/owner-detail/owner-detail.component';
 import { OwnersComponent } from './components/owners/owners.component';
+import { FavoritesListComponent } from './components/favorites-list/favorites-list.component';
 
 @NgModule({
   declarations: [
@@ -33,6 +35,7 @@ import { OwnersComponent } from './components/owners/owners.component';
     SoyProComponent,
     OwnerDetailComponent,
     OwnersComponent,
+    FavoritesListComponent,
   ],
   imports: [
     BrowserModule,
@@ -45,6 +48,7 @@ import { OwnersComponent } from './components/owners/owners.component';
     MatCardModule,
     MatButtonModule,
     MatInputModule,
+    MatDialogModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

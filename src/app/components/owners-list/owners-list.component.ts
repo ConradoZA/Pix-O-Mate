@@ -1,38 +1,63 @@
-import { Component, OnChanges, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { OwnersService } from '../../services/owners.service';
+import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { MatDialog } from '@angular/material/dialog';
+import { OwnerDetailComponent } from '../owner-detail/owner-detail.component';
 
 @Component({
   selector: 'app-owners-list',
   templateUrl: './owners-list.component.html',
   styleUrls: ['./owners-list.component.scss'],
 })
-export class OwnersListComponent implements OnInit {
-  constructor(private ownersServices: OwnersService) {}
+export class OwnersListComponent implements OnInit, AfterViewInit, OnDestroy {
+  constructor(
+    private ownersServices: OwnersService,
+    private router: Router,
+    public dialog: MatDialog
+  ) {}
 
   ngOnInit(): void {
-    this.ownersServices.ownersChanged.subscribe((data) => (this.owners = data));
-    this.ownersServices.maxPagesChanged.subscribe(
+    this.pageSubscription = this.ownersServices.maxPagesChanged.subscribe(
       (data) => (this.maxPages = data)
     );
+    this.searchPagesSubscription = this.ownersServices.maxSearchPagesChanged.subscribe(
+      (data) => (this.maxPages = data)
+    );
+    this.listSubscription = this.ownersServices.listCanged.subscribe(
+      (data) => (this.list = data)
+    );
+  }
+  ngAfterViewInit(): void {
     this.getOwnersPage();
   }
-  // ngOnChanges() {
-  //   this.populateList();
-  // }
+  ngOnDestroy(): void {
+    this.pageSubscription.unsubscribe();
+    this.listSubscription.unsubscribe();
+    this.searchPagesSubscription.unsubscribe();
+  }
 
-  owners: Array<any> = this.ownersServices.ownersList;
-  maxPages: number = this.ownersServices.maxPages;
-  list: Array<{}> = [];
+  // Variables declaration
+  maxPages: number = 1;
   page: number = 1;
-  items: number = 20;
-  startingPoint: number = 0;
+  pageSubscription: Subscription;
+  listSubscription: Subscription;
+  searchPagesSubscription: Subscription;
   showDetail: boolean = false;
   detailOwner: Object = {};
-  id: number;
-  checkFavList: Array<any> = [];
+  list: Array<any> = [];
 
+  //Functions
   getOwnersPage = (): void => {
-    this.ownersServices.getOwners(this.page);
+    const url = this.router.url;
+    if (url === '/pro') {
+      //
+    } else if (url === '/search' && this.ownersServices.searchPages > 0) {
+      this.maxPages = this.ownersServices.searchPages;
+      this.ownersServices.getSearch(this.page);
+    } else {
+      this.ownersServices.getOwners(this.page);
+    }
   };
   prevPage = (): void => {
     if (this.page - 1 >= 1) {
@@ -41,20 +66,18 @@ export class OwnersListComponent implements OnInit {
     }
   };
   nextPage = (): void => {
-    if (this.page + 1 < this.maxPages) {
+    if (this.page + 1 <= this.maxPages) {
       this.page += 1;
       this.getOwnersPage();
     }
   };
 
-  onShowDetail(id: number): void {
-    this.detailOwner = this.owners[this.page - 1].filter(
-      (owner) => owner['id'] === id
-    )[0];
-    this.showDetail = true;
+  openDialog(id: number): void {
+    const dialogRef = this.dialog.open(OwnerDetailComponent, {
+      data: this.list.filter((owner) => owner['id'] === id)[0],
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      this.detailOwner = {};
+    });
   }
-  onCloseDetail = (): void => {
-    this.showDetail = false;
-    this.detailOwner = {};
-  };
 }
