@@ -35,6 +35,10 @@ export class OwnersService {
   public status: string = '';
   public statusChanged = new Subject<string>();
 
+  public commentsList: Array<any> = [];
+  private lastId: number;
+  public commentsChanged = new Subject<Array<any>>();
+
   // Functions
   getOwners = (page: number = 1): void => {
     const index: number = page - 1;
@@ -108,5 +112,22 @@ export class OwnersService {
   killOneKittie = (): void => {
     this.killedKitties++;
     this.kittiesChanged.next(this.killedKitties);
+  };
+
+  getComments = (id: number): void => {
+    if (this.lastId !== id) {
+      this.lastId = id;
+      this.http
+        .get(`https://gorest.co.in/public-api/posts/${id}/comments`, {
+          headers: {
+            authorization: this.token,
+          },
+        })
+        .subscribe((res) => {
+          this.commentsList = res['data'];
+          this.commentsChanged.next(this.commentsList);
+          this.killOneKittie();
+        });
+    }
   };
 }

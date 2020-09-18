@@ -2,7 +2,13 @@
 <form class="flex-row flex-center" (submit)="searchOwner()">
   <mat-form-field>
     <mat-label>Buscar dueño por nombre</mat-label>
-    <input matInput type="text" [(ngModel)]="search" name="search" />
+    <input
+      matInput
+      type="text"
+      [(ngModel)]="search"
+      name="search"
+      (keyup)="typingListener()"
+    />
   </mat-form-field>
   <button mat-raised-button color="primary" type="submit">Buscar</button>
 </form>

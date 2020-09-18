@@ -2,20 +2,27 @@
   <table>
     <tr>
       <th>Nombre</th>
-      <th>email</th>
+      <th>e-mail</th>
       <th>Status</th>
+      <th>Comentarios</th>
     </tr>
     <tr
       *ngFor="let owner of list"
-      (click)="openDialog(owner['id'])"
       [ngClass]="{
         clickable: true,
         'owners-list-selected': showDetail && detailOwner['id'] === owner['id']
       }"
     >
-      <td>{{ owner["name"] }}</td>
-      <td>{{ owner["email"] }}</td>
-      <td>{{ owner["status"] }}</td>
+      <td (click)="openDialog(owner['id'])">
+        {{ owner["name"] }}
+      </td>
+      <td (click)="openDialog(owner['id'])">
+        {{ owner["email"] }}
+      </td>
+      <td (click)="openDialog(owner['id'])">
+        {{ owner["status"] }}
+      </td>
+      <td class="clickable" (click)="openComments(owner['id'])">ver</td>
     </tr>
   </table>
 </div>

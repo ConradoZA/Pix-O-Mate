@@ -1,5 +1,5 @@
 <mat-toolbar color="primary" class="flex-row space-between align-baseline">
-  <div>
+  <div matTooltip="Los gatitos que has matado 🙀" (click)="openPoorCat()">
     <img src="assets/img/cat-face.png" alt="cats killed" class="header-icon" />
     <span>{{ catsKilled }}</span>
   </div>
@@ -7,7 +7,10 @@
     <button mat-flat-button color="primary" (click)="toHome()">&#8592;</button>
     <h1>{{ getPageName() }}</h1>
   </div>
-  <div (click)="openFavoritesList()">
+  <div
+    matTooltip="Abre la lista de tus favoritos"
+    (click)="openFavoritesList()"
+  >
     <img src="assets/img/cat-heart.png" alt="favourites" class="header-icon" />
     <span>{{ favourites }}</span>
   </div>

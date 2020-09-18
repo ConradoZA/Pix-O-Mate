@@ -11,7 +11,6 @@ import { HeaderComponent } from '../header/header.component';
 export class FavoritesListComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<HeaderComponent>,
-    // @Inject(MAT_DIALOG_DATA) public detail,
     private favoritesServices: FavoritesService
   ) {}
 

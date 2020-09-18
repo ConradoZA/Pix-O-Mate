@@ -24,4 +24,16 @@ export class SearchComponent implements OnInit {
       this.search = '';
     }
   }
+  typingListener = (): void => {
+    if (this.search.length > 1) {
+      const notTyping = this.search;
+      setTimeout(() => {
+        if (notTyping === this.search) {
+          this.ownersServices.setSearch(this.search);
+          this.ownersServices.getSearch();
+          this.search = '';
+        }
+      }, 2000);
+    }
+  };
 }

@@ -4,6 +4,7 @@ import { OwnersService } from '../../services/owners.service';
 import { FavoritesService } from '../../services/favorites.service';
 import { MatDialog } from '@angular/material/dialog';
 import { FavoritesListComponent } from '../favorites-list/favorites-list.component';
+import { WhatCatsThinkComponent } from '../what-cats-think/what-cats-think.component';
 
 @Component({
   selector: 'app-header',
@@ -49,8 +50,9 @@ export class HeaderComponent implements OnInit {
     this.router.navigate(['']);
   };
   openFavoritesList = (): void => {
-    this.dialog.open(FavoritesListComponent, {
-      // data: this.list.filter((owner) => owner['id'] === id)[0],
-    });
+    this.dialog.open(FavoritesListComponent);
+  };
+  openPoorCat = (): void => {
+    this.dialog.open(WhatCatsThinkComponent);
   };
 }

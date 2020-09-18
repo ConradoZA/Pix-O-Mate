@@ -3,6 +3,7 @@ import { OwnersService } from '../../services/owners.service';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
+import { CommentsComponent } from '../comments/comments.component';
 import { OwnerDetailComponent } from '../owner-detail/owner-detail.component';
 
 @Component({
@@ -80,4 +81,8 @@ export class OwnersListComponent implements OnInit, AfterViewInit, OnDestroy {
       this.detailOwner = {};
     });
   }
+  openComments = (id: number): void => {
+    this.ownersServices.getComments(id);
+    this.dialog.open(CommentsComponent);
+  };
 }

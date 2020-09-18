@@ -8,6 +8,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -24,6 +26,8 @@ import { SoyProComponent } from './components/soy-pro/pro.component';
 import { OwnerDetailComponent } from './components/owner-detail/owner-detail.component';
 import { OwnersComponent } from './components/owners/owners.component';
 import { FavoritesListComponent } from './components/favorites-list/favorites-list.component';
+import { CommentsComponent } from './components/comments/comments.component';
+import { WhatCatsThinkComponent } from './components/what-cats-think/what-cats-think.component';
 
 @NgModule({
   declarations: [
@@ -37,6 +41,8 @@ import { FavoritesListComponent } from './components/favorites-list/favorites-li
     OwnerDetailComponent,
     OwnersComponent,
     FavoritesListComponent,
+    CommentsComponent,
+    WhatCatsThinkComponent,
   ],
   imports: [
     BrowserModule,
@@ -51,6 +57,8 @@ import { FavoritesListComponent } from './components/favorites-list/favorites-li
     MatInputModule,
     MatDialogModule,
     MatIconModule,
+    MatSnackBarModule,
+    MatTooltipModule,
   ],
   providers: [],
   bootstrap: [AppComponent],
