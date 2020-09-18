@@ -15,5 +15,14 @@ export class FavoritesListComponent implements OnInit {
     private favoritesServices: FavoritesService
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.favoritesList = this.favoritesServices.getFavoritesList();
+  }
+
+  favoritesList: Array<any> = [];
+
+  onDelete = (id: number): void => {
+    this.favoritesServices.reduceFavorite(id);
+    this.favoritesList = this.favoritesServices.getFavoritesList();
+  };
 }

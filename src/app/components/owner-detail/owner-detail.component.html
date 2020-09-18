@@ -4,13 +4,13 @@
   <img
     mat-card-image
     *ngIf="detail['gender'] === 'Male'"
-    src="assets/img/cat1.jpg"
+    [src]="maleCat"
     alt="photo profile"
   />
   <img
     mat-card-image
     *ngIf="detail['gender'] !== 'Male'"
-    src="assets/img/cat2.jpg"
+    [src]="femaleCat"
     alt="photo profile"
   />
   <mat-card-content>
@@ -26,11 +26,12 @@
     <p>
       Registrad<span *ngIf="detail['gender'] === 'Male'">o </span
       ><span *ngIf="detail['gender'] === 'Female'">a </span>
-      <span *ngIf="years || months || days"> hace</span>
+      <span *ngIf="years || months || days || hours">hace </span>
       <span *ngIf="years">{{ years }} años - </span>
       <span *ngIf="months">{{ months }} meses - </span>
-      <span *ngIf="days">{{ days }} días.</span>
-      <span *ngIf="!days">hoy.</span>
+      <span *ngIf="days">{{ days }} días - </span>
+      <span *ngIf="hours">{{ hours }} horas.</span>
+      <span *ngIf="!hours">ahora.</span>
     </p>
   </mat-card-content>
   <mat-card-actions>

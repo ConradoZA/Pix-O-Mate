@@ -4,6 +4,7 @@ import { OwnersService } from '../../services/owners.service';
 import { FavoritesService } from '../../services/favorites.service';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { OwnersListComponent } from '../owners-list/owners-list.component';
+import { MathService } from '../../services/math.service';
 
 @Component({
   selector: 'app-owner-detail',
@@ -15,7 +16,8 @@ export class OwnerDetailComponent implements OnInit, OnDestroy {
     public dialogRef: MatDialogRef<OwnersListComponent>,
     @Inject(MAT_DIALOG_DATA) public detail,
     private favoritesServices: FavoritesService,
-    private ownersServices: OwnersService
+    private ownersServices: OwnersService,
+    private mathService: MathService
   ) {}
 
   ngOnInit(): void {
@@ -39,7 +41,10 @@ export class OwnerDetailComponent implements OnInit, OnDestroy {
   years: number;
   months: number;
   days: number;
+  hours: number;
   today: Date = new Date();
+  maleCat: string = this.mathService.randomMale();
+  femaleCat: string = this.mathService.randomFemale();
 
   existsInFavList(id: number) {
     this.checkFavList = this.favoritesList
@@ -55,6 +60,7 @@ export class OwnerDetailComponent implements OnInit, OnDestroy {
     this.years = this.today.getFullYear() - created.getFullYear();
     this.months = this.today.getMonth() - created.getMonth();
     this.days = this.today.getDate() - created.getDate();
+    this.hours = this.today.getHours() - created.getHours();
   };
 
   onAddFav(owner: Object): void {
