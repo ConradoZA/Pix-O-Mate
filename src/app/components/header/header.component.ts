@@ -46,9 +46,11 @@ export class HeaderComponent implements OnInit {
         return 'Pix-O-Mate';
     }
   };
+
   toHome = () => {
     this.router.navigate(['']);
   };
+
   openFavoritesList = (): void => {
     this.dialog.open(FavoritesListComponent);
   };

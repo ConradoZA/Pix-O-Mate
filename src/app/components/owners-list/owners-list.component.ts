@@ -60,6 +60,7 @@ export class OwnersListComponent implements OnInit, AfterViewInit, OnDestroy {
       this.ownersServices.getOwners(this.page);
     }
   };
+
   prevPage = (): void => {
     if (this.page - 1 >= 1) {
       this.page -= 1;
@@ -73,14 +74,14 @@ export class OwnersListComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   };
 
-  openDialog(id: number): void {
+  openDialog = (id: number): void => {
     const dialogRef = this.dialog.open(OwnerDetailComponent, {
       data: this.list.filter((owner) => owner['id'] === id)[0],
     });
     dialogRef.afterClosed().subscribe((result) => {
       this.detailOwner = {};
     });
-  }
+  };
   openComments = (id: number): void => {
     this.ownersServices.getComments(id);
     this.dialog.open(CommentsComponent);

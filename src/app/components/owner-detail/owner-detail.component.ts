@@ -34,6 +34,7 @@ export class OwnerDetailComponent implements OnInit, OnDestroy {
     this.statusSbscription.unsubscribe();
   }
 
+  // Variables declaration
   favoritesList: Array<any> = [];
   checkFavList: boolean;
   status: string = this.ownersServices.status;
@@ -46,15 +47,18 @@ export class OwnerDetailComponent implements OnInit, OnDestroy {
   maleCat: string = this.mathService.randomMale();
   femaleCat: string = this.mathService.randomFemale();
 
-  existsInFavList(id: number) {
+  // Functions
+  existsInFavList = (id: number) => {
     this.checkFavList = this.favoritesList
       .map((owner) => (owner['id'] === id ? true : false))
       .includes(true);
     return this.checkFavList;
-  }
+  };
+
   updateStatus = (): void => {
     this.ownersServices.getUpdatedStatus(this.detail['id']);
   };
+
   calculateDifference = (): void => {
     const created = new Date(this.detail['created_at']);
     this.years = this.today.getFullYear() - created.getFullYear();
@@ -63,13 +67,13 @@ export class OwnerDetailComponent implements OnInit, OnDestroy {
     this.hours = this.today.getHours() - created.getHours();
   };
 
-  onAddFav(owner: Object): void {
+  onAddFav = (owner: Object): void => {
     this.favoritesServices.addFavorite(owner);
-  }
-  onReduceFav(id: number): void {
+  };
+  onReduceFav = (id: number): void => {
     this.favoritesServices.reduceFavorite(id);
     this.favoritesList = this.favoritesServices.getFavoritesList();
-  }
+  };
 
   onClose = (): void => {
     this.dialogRef.close();

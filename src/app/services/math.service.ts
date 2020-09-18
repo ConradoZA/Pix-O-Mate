@@ -5,6 +5,7 @@ import { Injectable } from '@angular/core';
 })
 export class MathService {
   constructor() {}
+
   randomMale = (): string => {
     const number = Math.random();
     if (number > 0.9) return 'assets/img/math-cat.jpg';
@@ -21,6 +22,7 @@ export class MathService {
     else if (number > 0.1) return 'assets/img/cat6.jpg';
     else return 'assets/img/cat8.jpg';
   };
+
   randomAvatar = (): string => {
     const number = Math.random();
     if (number > 0.5) return 'assets/img/kitten_face.png';
