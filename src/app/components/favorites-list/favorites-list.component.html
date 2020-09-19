@@ -19,8 +19,12 @@
         <th><mat-icon>delete</mat-icon></th>
       </tr>
       <tr *ngFor="let owner of favoritesList">
-        <td>{{ owner["name"] }}</td>
-        <td>{{ owner["status"] }}</td>
+        <td class="clickable" (click)="openDetails(owner['id'])">
+          {{ owner["name"] }}
+        </td>
+        <td class="clickable" (click)="openDetails(owner['id'])">
+          {{ owner["status"] }}
+        </td>
         <td class="clickable" (click)="onDelete(owner['id'])">
           <mat-icon color="warn">highlight_off</mat-icon>
         </td>

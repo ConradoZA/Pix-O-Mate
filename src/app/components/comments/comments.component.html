@@ -1,8 +1,11 @@
 <mat-card>
   <mat-card-content>
-    <div *ngFor="let item of commentsList" class="comments-box">
-      <img [src]="avatar" alt="user avatar" class="comments-img" />
-      <div>{{ item["body"] }}</div>
+    <div *ngFor="let item of commentsList">
+      <div class="comments-box">
+        <img src="{{ avatar }}" alt="user avatar" class="comments-img" />
+        <div>{{ item["body"] }}</div>
+      </div>
+      <br />
     </div>
     <div *ngIf="!commentsList || commentsList.length === 0">
       ¡No hay comentarios!

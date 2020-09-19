@@ -3,8 +3,6 @@ import { Subscription } from 'rxjs';
 import { OwnersService } from '../../services/owners.service';
 import { FavoritesService } from '../../services/favorites.service';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { OwnersListComponent } from '../owners-list/owners-list.component';
-import { MathService } from '../../services/math.service';
 
 @Component({
   selector: 'app-owner-detail',
@@ -13,18 +11,17 @@ import { MathService } from '../../services/math.service';
 })
 export class OwnerDetailComponent implements OnInit, OnDestroy {
   constructor(
-    public dialogRef: MatDialogRef<OwnersListComponent>,
+    public dialogRef: MatDialogRef<any>,
     @Inject(MAT_DIALOG_DATA) public detail,
     private favoritesServices: FavoritesService,
-    private ownersServices: OwnersService,
-    private mathService: MathService
+    private ownersServices: OwnersService
   ) {}
 
   ngOnInit(): void {
     this.favoritesList = this.favoritesServices.getFavoritesList();
     this.statusSbscription = this.ownersServices.statusChanged.subscribe(
       (data) => {
-        this.status = data;
+        this.ownerStatus = data;
       }
     );
     this.updateStatus();
@@ -37,15 +34,13 @@ export class OwnerDetailComponent implements OnInit, OnDestroy {
   // Variables declaration
   favoritesList: Array<any> = [];
   checkFavList: boolean;
-  status: string = this.ownersServices.status;
+  ownerStatus: Object = {};
   statusSbscription: Subscription;
   years: number;
   months: number;
   days: number;
   hours: number;
   today: Date = new Date();
-  maleCat: string = this.mathService.randomMale();
-  femaleCat: string = this.mathService.randomFemale();
 
   // Functions
   existsInFavList = (id: number) => {
@@ -56,7 +51,7 @@ export class OwnerDetailComponent implements OnInit, OnDestroy {
   };
 
   updateStatus = (): void => {
-    this.ownersServices.getUpdatedStatus(this.detail['id']);
+    this.ownersServices.getStatus(this.detail['id']);
   };
 
   calculateDifference = (): void => {
@@ -73,9 +68,5 @@ export class OwnerDetailComponent implements OnInit, OnDestroy {
   onReduceFav = (id: number): void => {
     this.favoritesServices.reduceFavorite(id);
     this.favoritesList = this.favoritesServices.getFavoritesList();
-  };
-
-  onClose = (): void => {
-    this.dialogRef.close();
   };
 }

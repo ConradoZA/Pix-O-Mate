@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { OwnersService } from '../../services/owners.service';
 
 @Component({
   selector: 'app-owners',
@@ -7,9 +6,7 @@ import { OwnersService } from '../../services/owners.service';
   styleUrls: ['./owners.component.scss'],
 })
 export class OwnersComponent implements OnInit {
-  constructor(private ownersServices: OwnersService) {}
+  constructor() {}
 
-  ngOnInit(): void {
-    this.ownersServices.getOwners();
-  }
+  ngOnInit(): void {}
 }

@@ -10,7 +10,6 @@ export class SearchComponent implements OnInit {
   constructor(private ownersServices: OwnersService) {}
 
   ngOnInit(): void {
-    this.ownersServices.getOwners();
   }
 
   searchResults: Object = {};

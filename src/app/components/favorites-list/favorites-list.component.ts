@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { FavoritesService } from '../../services/favorites.service';
 import { HeaderComponent } from '../header/header.component';
+import { OwnerDetailComponent } from '../owner-detail/owner-detail.component';
 
 @Component({
   selector: 'app-favorites-list',
@@ -11,7 +12,8 @@ import { HeaderComponent } from '../header/header.component';
 export class FavoritesListComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<HeaderComponent>,
-    private favoritesServices: FavoritesService
+    private favoritesServices: FavoritesService,
+    public dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -23,5 +25,17 @@ export class FavoritesListComponent implements OnInit {
   onDelete = (id: number): void => {
     this.favoritesServices.reduceFavorite(id);
     this.favoritesList = this.favoritesServices.getFavoritesList();
+  };
+
+  openDetails = (id: number) => {
+    const detailOwner = this.favoritesList
+    .filter((owner) => owner['id'] === id)[0];
+
+    const detailRef = this.dialog
+    .open(OwnerDetailComponent, {data: detailOwner});
+
+    detailRef.afterClosed().subscribe((result) => {
+      this.favoritesList = this.favoritesServices.getFavoritesList();
+    });
   };
 }

@@ -28,15 +28,16 @@ export class OwnersService {
   public searchPages: number = 0;
   public maxSearchPagesChanged = new Subject<number>();
 
-  private CALLS_KEY: string = 'killedKitties';
-  public killedKitties: number = this.localStorage.get(this.CALLS_KEY) || 0;
+  private KILLED_KEY = 'killKat';
+  public killedKitties: number = this.localStorage.get(this.KILLED_KEY) || 0;
   public kittiesChanged = new Subject<number>();
 
-  public status: string = '';
+  private STATUS_KEY = 'statusArray';
+  private statusDetails: Array<any> =
+    this.localStorage.get(this.STATUS_KEY) || [];
   public statusChanged = new Subject<string>();
 
   public commentsList: Array<any> = [];
-  private lastId: number;
   public commentsChanged = new Subject<Array<any>>();
 
   // Functions
@@ -53,10 +54,9 @@ export class OwnersService {
           this.ownersList[index] = res['data'];
           this.maxPages = res['meta'].pagination.pages;
           this.maxPagesChanged.next(this.maxPages);
-          this.killOneKittie();
+          this.killOneKitten();
           this.listCanged.next(this.ownersList[index]);
         });
-      return;
     }
     this.listCanged.next(this.ownersList[index]);
   };
@@ -76,32 +76,53 @@ export class OwnersService {
         .subscribe((res) => {
           this.searchPages = res['meta'].pagination.pages;
           this.maxSearchPagesChanged.next(this.searchPages);
-          this.killOneKittie();
+          this.killOneKitten();
           this.searchList[index] = res['data'];
           this.listCanged.next(this.searchList[index]);
         });
-      return;
     }
     this.listCanged.next(this.searchList[index]);
   };
-  getUpdatedStatus = (id: number): void => {
-    // for (let i = 0; i < this.maxPages; i++) {
-    //   const pageArray = this.ownersList[i];
-    //   const alreadyExist = pageArray.filter((owner) => {
-    //     owner['id'] === id;
-    //   });
-    //   if (alreadyExist.length > 0) return alreadyExist[0];
-    // }
-    this.status = '';
+  getStatus = (id: number): void => {
+    if (!this.statusDetails[id]) {
+      this.updateStatus(id);
+      return;
+    }
+    const today: number = new Date().getDay();
+    const lastDownload: number = new Date(
+      this.statusDetails[id]['lastInfo']
+    ).getDay();
+    const beforeMonday: boolean =
+      (lastDownload === 0 || lastDownload > 4) && today > 1;
+    const tuesdayToThursday: boolean =
+      lastDownload <= 4 && lastDownload > 1 && today > 4;
+
+    if (beforeMonday && tuesdayToThursday) {
+      this.updateStatus(id);
+    }
+    this.statusChanged.next(this.statusDetails[id]);
+  };
+  private updateStatus = (id: number): void => {
     this.http
       .get(`https://gorest.co.in/public-api/users/${id}`, {
         headers: {
           authorization: this.token,
         },
       })
-      .subscribe((res) => {
-        this.killOneKittie();
-        this.statusChanged.next(res['data']['status']);
+      .subscribe((res: Object) => {
+        const date: Date = new Date();
+        const gender: string = res['data']['gender'];
+        let picture: string;
+        if (gender === 'Male') picture = this.randomMale();
+        else picture = this.randomFemale();
+        this.statusDetails[id] = {
+          lastInfo: date,
+          img: picture,
+          status: res['data']['status'],
+        };
+        this.localStorage.set(this.STATUS_KEY, this.statusDetails);
+        this.killOneKitten();
+        this.statusChanged.next(this.statusDetails[id]);
       });
   };
 
@@ -109,14 +130,14 @@ export class OwnersService {
     this.search = query;
   };
 
-  killOneKittie = (): void => {
+  killOneKitten = (): void => {
     this.killedKitties++;
+    this.localStorage.set(this.KILLED_KEY, this.killedKitties);
     this.kittiesChanged.next(this.killedKitties);
   };
 
   getComments = (id: number): void => {
-    if (this.lastId !== id) {
-      this.lastId = id;
+    if (!this.commentsList[id]) {
       this.http
         .get(`https://gorest.co.in/public-api/posts/${id}/comments`, {
           headers: {
@@ -124,10 +145,33 @@ export class OwnersService {
           },
         })
         .subscribe((res) => {
-          this.commentsList = res['data'];
-          this.commentsChanged.next(this.commentsList);
-          this.killOneKittie();
+          this.commentsList[id] = [this.newAvatar(), res['data']];
+          this.commentsChanged.next(this.commentsList[id]);
+          this.killOneKitten();
         });
     }
+    this.commentsChanged.next(this.commentsList[id]);
+  };
+
+  randomMale = (): string => {
+    const number = Math.random();
+    if (number > 0.9) return 'assets/img/math-cat.jpg';
+    else if (number > 0.7) return 'assets/img/cat1.jpg';
+    else if (number > 0.4) return 'assets/img/cat3.jpg';
+    else if (number > 0.1) return 'assets/img/cat5.jpg';
+    else return 'assets/img/cat7.jpg';
+  };
+  randomFemale = (): string => {
+    const number = Math.random();
+    if (number > 0.9) return 'assets/img/math-cat.jpg';
+    else if (number > 0.7) return 'assets/img/cat2.jpg';
+    else if (number > 0.4) return 'assets/img/cat3.jpg';
+    else if (number > 0.1) return 'assets/img/cat6.jpg';
+    else return 'assets/img/cat8.jpg';
+  };
+  newAvatar = (): string => {
+    const number = Math.random();
+    if (number > 0.5) return 'assets/img/kitten_face.png';
+    else return 'assets/img/kitt-kat.png';
   };
 }

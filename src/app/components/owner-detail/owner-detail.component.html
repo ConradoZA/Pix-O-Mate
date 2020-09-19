@@ -3,24 +3,26 @@
   <mat-card-subtitle>{{ detail["gender"] }}</mat-card-subtitle>
   <img
     mat-card-image
+    class="owner-detail-img"
     *ngIf="detail['gender'] === 'Male'"
-    [src]="maleCat"
+    src="{{ ownerStatus['img'] }}"
     alt="photo profile"
   />
   <img
     mat-card-image
+    class="owner-detail-img"
     *ngIf="detail['gender'] !== 'Male'"
-    [src]="femaleCat"
+    src="{{ ownerStatus['img'] }}"
     alt="photo profile"
   />
   <mat-card-content>
     <p
       [ngClass]="{
-        green: status === 'Active',
-        red: status !== 'Active'
+        green: ownerStatus['status'] === 'Active',
+        red: ownerStatus['status'] !== 'Active'
       }"
     >
-      {{ status }}
+      {{ ownerStatus["status"] }}
     </p>
     <p>{{ detail["email"] }}</p>
     <p>
@@ -36,7 +38,6 @@
   </mat-card-content>
   <mat-card-actions>
     <div class="flex-row space-evenly">
-      <button mat-stroked-button (click)="onClose()">X</button>
       <button
         mat-raised-button
         color="accent"

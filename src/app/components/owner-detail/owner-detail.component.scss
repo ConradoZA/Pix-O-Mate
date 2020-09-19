@@ -1,4 +1,9 @@
 .owner-detail-card {
-  width           : 300px;
-  text-align      : center;
+  width     : 300px;
+  text-align: center;
+}
+
+.owner-detail-img {
+  max-height: 250px;
+  object-fit: contain;
 }

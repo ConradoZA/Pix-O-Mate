@@ -1,7 +1,7 @@
 <br />
 <form class="flex-row flex-center" (submit)="searchOwner()">
   <mat-form-field>
-    <mat-label>Buscar dueño por nombre</mat-label>
+    <mat-label>Buscar por nombre</mat-label>
     <input
       matInput
       type="text"
@@ -10,7 +10,14 @@
       (keyup)="typingListener()"
     />
   </mat-form-field>
-  <button mat-raised-button color="primary" type="submit">Buscar</button>
+  <button
+    *ngIf="search.length > 1"
+    mat-raised-button
+    color="primary"
+    type="submit"
+  >
+    Buscar
+  </button>
 </form>
 <br />
 <app-owners-list></app-owners-list>

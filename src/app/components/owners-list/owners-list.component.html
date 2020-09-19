@@ -10,7 +10,7 @@
       *ngFor="let owner of list"
       [ngClass]="{
         clickable: true,
-        'owners-list-selected': showDetail && detailOwner['id'] === owner['id']
+        'owners-list-selected': detailOwner['id'] === owner['id']
       }"
     >
       <td (click)="openDialog(owner['id'])">
@@ -22,13 +22,16 @@
       <td (click)="openDialog(owner['id'])">
         {{ owner["status"] }}
       </td>
-      <td class="clickable" (click)="openComments(owner['id'])">ver</td>
+      <td class="clickable" (click)="openComments(owner['id'])">
+        <span class="owners-list-box">ver</span>
+      </td>
     </tr>
   </table>
 </div>
 <br />
 <div class="flex-row space-evenly">
   <button
+    class="owners-list-pagButtons"
     mat-raised-button
     color="accent"
     [disabled]="page <= 1"
@@ -36,8 +39,21 @@
   >
     Anterior
   </button>
-  <span>{{ page }} de {{ maxPages }}</span>
+  <div class="flex-row flex-center">
+    <form (submit)="goToPage()">
+      <input
+        class="owners-list-pagNumber"
+        type="number"
+        min="1"
+        max="{{ maxPages }}"
+        [(ngModel)]="tempPage"
+        name="tempPage"
+      />
+    </form>
+    <span>&nbsp; de {{ maxPages }}</span>
+  </div>
   <button
+    class="owners-list-pagButtons"
     mat-raised-button
     color="accent"
     [disabled]="page >= maxPages"
