@@ -1,1 +1,55 @@
-<p>Todavía no soy pro</p>
+<div class="flex-column flex-center">
+  <!-- <br />
+  <form (submit)="searchOwner()">
+    <mat-form-field>
+      <mat-label>Buscar por nombre</mat-label>
+      <input
+        matInput
+        type="text"
+        [(ngModel)]="search"
+        name="search"
+        (keyup)="typingListener()"
+      />
+    </mat-form-field>
+    <button
+      *ngIf="search.length > 1"
+      mat-raised-button
+      color="primary"
+      type="submit"
+    >
+      Buscar
+    </button>
+  </form> -->
+  <br />
+  <div class="pro-card mat-elevation-z8" (scroll)="onScroll($event)">
+    <table>
+      <tr>
+        <th>Nombre</th>
+        <th>e-mail</th>
+        <th>Status</th>
+        <th>Comentarios</th>
+      </tr>
+      <tr
+        *ngFor="let owner of list"
+        [ngClass]="{
+          clickable: true,
+			 'pro-padding':true,
+          'pro-selected': detailOwner['id'] === owner['id']
+        }"
+      >
+        <td (click)="openDialog(owner['id'])">
+          {{ owner["name"] }}
+        </td>
+        <td (click)="openDialog(owner['id'])">
+          {{ owner["email"] }}
+        </td>
+        <td (click)="openDialog(owner['id'])">
+          {{ owner["status"] }}
+        </td>
+        <td class="clickable" (click)="openComments(owner['id'])">
+          <span class="pro-box">ver</span>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>

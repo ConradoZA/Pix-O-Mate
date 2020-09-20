@@ -174,4 +174,8 @@ export class OwnersService {
     if (number > 0.5) return 'assets/img/kitten_face.png';
     else return 'assets/img/kitt-kat.png';
   };
+
+  getOwnersList = (): Array<[]> => {
+    return this.ownersList;
+  };
 }
