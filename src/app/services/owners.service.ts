@@ -63,6 +63,7 @@ export class OwnersService {
   getSearch = (page: number = 1): void => {
     const index: number = page - 1;
     if (!this.searchList[index] || this.lastSearch !== this.search) {
+      if (this.lastSearch !== this.search) this.searchList = [];
       this.lastSearch = this.search;
       this.http
         .get(
@@ -177,5 +178,8 @@ export class OwnersService {
 
   getOwnersList = (): Array<[]> => {
     return this.ownersList;
+  };
+  getSearchList = (): Array<[]> => {
+    return this.searchList;
   };
 }
