@@ -129,4 +129,4 @@ You can see a list of all the comment this user has written... or none.
 - "Who the hell is Zod?" => [Zod](https://en.wikipedia.org/wiki/General_Zod).
 - ["Oh, Zod"](https://www.youtube.com/watch?v=dnew78z1a-s).
 - [Achtung!](https://www.youtube.com/watch?v=ksmuG8z5zAY) => German word for "attention!", "look out!" or "danger!".
-- [⛎](#i'm-pro) => C'mon, click on there... Oh, well: it's the thirteen "unofficial" horoscope sign, ["Ophiuchus"](https://duckduckgo.com/?q=Ophiuchus)... but click there 😉.
+- [⛎](#i'm-pro) => C'mon, click on there... Oh, well: it's the thirteen "unofficial" horoscope sign, ["Ophiuchus"](https://duckduckgo.com/?q=Ophiuchus)... but click there 😉
