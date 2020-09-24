@@ -1,9 +1,12 @@
 # PixOMateLovingKittens
 
-Welcome to a website where all cat-lovers can gather, talk and find each other!... Their actual cats will be added in a future update.
+---
+Welcome to a website where all cat-lovers can gather, talk and find each other!...
+Their actual cats will be added in a future update.
 ... Oh, just one caveat: whenever you ask for new information, Zod kills one kitten 😉
 
 It's a frontend "trucho" made with Angular.
+
 
 - ⚓ [Requires](#⚓-requires)
 - 🚥 [Install](#🚥-install)
@@ -44,7 +47,7 @@ If you want to see any kind of data, you need to go to [Go REST](https://gorest.
 Then, navigate to the project folder and there to /src/app/settings/
 Inside the archive "api-token.example.ts", substitute everything within apostrophes with your personal token.
 **Save**.
-And ***rename*** "api-token.example.ts" to "api-token.ts"
+And **_rename_** "api-token.example.ts" to "api-token.ts"
 
 ### 4 - Start the server/application
 
@@ -98,6 +101,7 @@ You can click in one user to see his/her [detail card](#detail-card), or click i
 Here you see a list of 13 results (I don't believe in this kind of bad luck [⛎](https://saintseiya.fandom.com/wiki/Ophiuchus_Odysseus)) and a scroll to see all the rest.
 
 There is no navigation buttons because when you reach the end of the list, it automatically fetchs you the next 20 results ([all kneel before Zod!](https://www.youtube.com/watch?v=VPAaSqwZGzk))
+That's called _infinite scroll_.
 Again, there is a search field where you can search by name (you can go to [Search](#search) to read it's abilities)
 
 Here the search field doesn't automatically resets after a search so you can remember what you are searching.
