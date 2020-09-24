@@ -38,7 +38,15 @@ Navigate inside the project folder and, in a terminal, execute this:
 npm install
 ```
 
-### 3 - Start the server/application
+### 3 - Configure API token
+
+If you want to see any kind of data, you need to go to [Go REST](https://gorest.co.in/), create an account and copy your "API Access Token".
+Then, navigate to the project folder and there to /src/app/settings/
+Inside the archive "api-token.example.ts", substitute everything within apostrophes with your personal token.
+**Save**.
+And ***rename*** "api-token.example.ts" to "api-token.ts"
+
+### 4 - Start the server/application
 
 ```bash
 ng serve
